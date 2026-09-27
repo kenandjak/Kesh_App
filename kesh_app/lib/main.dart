@@ -2,11 +2,11 @@
 import 'package:flutter/material.dart';
 
 import 'core/di/injection_container.dart' as di;
+import 'presentation/pages/auth_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Inicializa a injeção de dependências
   await di.init();
 
   runApp(const KeshApp());
@@ -19,7 +19,11 @@ class KeshApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Kesh',
-      home: Scaffold(body: Center(child: Text('Kesh App Inicializado'))),
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
+        useMaterial3: true,
+      ),
+      home: const AuthPage(),
     );
   }
 }

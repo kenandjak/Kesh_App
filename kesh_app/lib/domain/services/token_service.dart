@@ -1,5 +1,5 @@
-import '../entities/usuario.dart';
+import '../entities/user.dart';
 
-abstract class ITokenService {
-  String gerarToken(Usuario usuario);
+abstract class TokenService {
+  String generateToken(User user);
 }

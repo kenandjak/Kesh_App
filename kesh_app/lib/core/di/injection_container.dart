@@ -2,8 +2,8 @@ import 'package:get_it/get_it.dart';
 import 'package:uuid/uuid.dart';
 
 // --- Imports: Casos de Uso (Módulo de Usuários) ---
-import '../../application/usecases/cadastrar_usuario.dart';
-import '../../application/usecases/login_usuario.dart';
+import '../../application/usecases/register_user.dart';
+import '../../application/usecases/login_user.dart';
 
 // --- Imports: Autenticação SOLID (Módulo de Auth) ---
 import '../../domain/repositories/auth_strategy.dart';
@@ -36,8 +36,8 @@ Future<void> init() async {
   // ---------------------------------------------------------------------------
   // CASOS DE USO (Aplicação)
   // ---------------------------------------------------------------------------
-  sl.registerFactory(() => CadastrarUsuario(sl(), sl(), sl()));
-  sl.registerFactory(() => LoginUsuario(sl(), sl(), sl()));
+  sl.registerFactory(() => RegisterUser(sl(), sl(), sl()));
+  sl.registerFactory(() => LoginUser(sl(), sl(), sl()));
 
   // ---------------------------------------------------------------------------
   // CONTROLLERS (Apresentação)

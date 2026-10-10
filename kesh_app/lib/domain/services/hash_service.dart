@@ -1,4 +1,4 @@
-abstract class IHashService {
-  String gerarHash(String senhaPlana);
-  bool verificarSenha(String senhaPlana, String hash);
+abstract class HashService {
+  String generateHash(String plainPassword);
+  bool verifyPassword(String plainPassword, String hash);
 }

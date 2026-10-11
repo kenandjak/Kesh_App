@@ -6,4 +6,5 @@ abstract class UserRepository {
   Future<bool> verifyCpf(String cpf);
   Future<void> saveUserAndWallet(User user, Wallet wallet);
   Future<User?> getByEmail(String email);
+  Future<User?> getById(String id);
 }

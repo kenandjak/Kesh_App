@@ -22,6 +22,17 @@ class _HomePageState extends State<HomePage> {
   static const _backgroundColor = Color(0xFFF2F4F2);
 
   @override
+  void initState() {
+    super.initState();
+    // Chama o carregamento dos dados após o primeiro frame da tela
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Aqui você passará o ID do usuário que fez o login.
+      // Por enquanto, usamos um ID provisório para não quebrar.
+      _controller.loadData('USR-12345');
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: _backgroundColor,
@@ -29,6 +40,20 @@ class _HomePageState extends State<HomePage> {
         child: ListenableBuilder(
           listenable: _controller,
           builder: (context, child) {
+            if (_controller.isLoading) {
+              return const Center(
+                child: CircularProgressIndicator(color: Colors.green),
+              );
+            }
+
+            if (_controller.errorMessage != null) {
+              return Center(
+                child: Text(
+                  _controller.errorMessage!,
+                  style: const TextStyle(color: Colors.red, fontSize: 16),
+                ),
+              );
+            }
             return SingleChildScrollView(
               padding: const EdgeInsets.symmetric(
                 horizontal: 24.0,
@@ -39,7 +64,7 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   HomeHeader(
                     userName: _controller.userName,
-                    formattedDate: 'TERÇA-FEIRA, 26 DE MAIO', // formatar depois
+                    formattedDate: _controller.currentDateFormatted,
                   ),
                   const SizedBox(height: 24),
                   BalanceCard(

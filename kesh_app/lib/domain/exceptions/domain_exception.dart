@@ -41,3 +41,11 @@ class UserBlockedException extends DomainException {
   UserBlockedException()
     : super('Conta bloqueada. Não é possível aceder ao sistema.');
 }
+
+class UserNotFoundException extends DomainException {
+  UserNotFoundException() : super('Usuário não encontrado.');
+}
+
+class WalletNotFoundException extends DomainException {
+  WalletNotFoundException() : super('Carteira não encontrada.');
+}

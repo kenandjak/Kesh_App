@@ -1,12 +1,13 @@
 // lib/main.dart
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 import 'core/di/injection_container.dart' as di;
 import 'core/routes/app_routes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  await initializeDateFormatting('pt_BR', null);
   await di.init();
 
   runApp(const KeshApp());

@@ -10,6 +10,7 @@ import '../../domain/repositories/auth_strategy.dart';
 import '../../infrastructure/strategies/email_password_auth_strategy.dart';
 import '../../infrastructure/strategies/google_sign_in_auth_strategy.dart';
 import '../../presentation/controllers/auth_controller.dart';
+import '../../presentation/controllers/home_controller.dart';
 import '../../domain/repositories/token_manager.dart';
 import '../../infrastructure/security/secure_token_manager.dart';
 
@@ -43,6 +44,7 @@ Future<void> init() async {
   // CONTROLLERS (Apresentação)
   // ---------------------------------------------------------------------------
   sl.registerLazySingleton(() => AuthController());
+  sl.registerLazySingleton(() => HomeController());
 
   // ---------------------------------------------------------------------------
   // ESTRATÉGIAS DE AUTENTICAÇÃO (Factories)

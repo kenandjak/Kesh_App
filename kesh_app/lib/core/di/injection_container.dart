@@ -21,6 +21,8 @@ import '../../domain/repositories/wallet_repository.dart';
 
 // --- Imports: Infraestrutura Fake
 import '../../infrastructure/repositories/fake_repositories.dart';
+import '../../infrastructure/repositories/fake_auth_clients.dart';
+import '../../infrastructure/repositories/fake_secure_storage_client.dart';
 
 final sl = GetIt.instance; // sl = Service Locator
 
@@ -36,12 +38,14 @@ Future<void> init() async {
   // sl.registerLazySingleton<UsuarioRepository>(() => UsuarioRepositorySqlite(db: sl()));
   sl.registerLazySingleton<UserRepository>(() => FakeUserRepository());
   sl.registerLazySingleton<WalletRepository>(() => FakeWalletRepository());
-  // sl.registerLazySingleton<HashService>(() => BcryptHashService());
-  // sl.registerLazySingletonITokenService>(() => JwtTokenService());
 
-  // Clientes da nova autenticação
-  // sl.registerLazySingleton<AuthApiClient>(() => MeuAuthApiClient(dio: sl()));
-  // sl.registerLazySingleton<GoogleAuthClient>(() => MeuGoogleAuthClient());
+  sl.registerLazySingleton<AuthApiClient>(() => FakeAuthApiClient());
+  sl.registerLazySingleton<GoogleAuthClient>(() => FakeGoogleAuthClient());
+  // sl.registerLazySingleton<HashService>(() => BcryptHashService());
+  // sl.registerLazySingletonTokenService>(() => JwtTokenService());
+  sl.registerLazySingleton<SecureStorageClient>(
+    () => FakeSecureStorageClient(),
+  );
   sl.registerLazySingleton<TokenManager>(() => SecureTokenManager(sl()));
 
   // ---------------------------------------------------------------------------

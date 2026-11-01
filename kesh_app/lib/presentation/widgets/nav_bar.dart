@@ -1,16 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class BottomNavBar extends StatelessWidget {
   const BottomNavBar({
     super.key,
     required this.currentIndex,
-    required this.onTap,
+    //required this.onTap,
   });
 
   final int currentIndex;
-  final ValueChanged<int> onTap;
+  //final ValueChanged<int> onTap;
 
   static const _backgroundColor = Color(0xFF0F2614);
+
+  static const List<String> _routes = ['/home', '/statement', '/profile'];
+
+  void _onItemTapped(BuildContext context, int index) {
+    if (index == currentIndex) return;
+
+    context.go(_routes[index]);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +41,7 @@ class BottomNavBar extends StatelessWidget {
           selectedItemColor: Colors.green.shade400,
           unselectedItemColor: Colors.grey.shade500,
           currentIndex: currentIndex,
-          onTap: onTap,
+          onTap: (index) => _onItemTapped(context, index),
           items: const [
             BottomNavigationBarItem(
               icon: Icon(Icons.home_outlined),

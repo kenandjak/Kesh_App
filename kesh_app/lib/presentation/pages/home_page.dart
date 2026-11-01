@@ -17,17 +17,13 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final _controller = GetIt.I<HomeController>();
-  int _currentIndex = 0;
 
   static const _backgroundColor = Color(0xFFF2F4F2);
 
   @override
   void initState() {
     super.initState();
-    // Chama o carregamento dos dados após o primeiro frame da tela
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // Aqui você passará o ID do usuário que fez o login.
-      // Por enquanto, usamos um ID provisório para não quebrar.
       _controller.loadData('USR-12345');
     });
   }
@@ -83,10 +79,7 @@ class _HomePageState extends State<HomePage> {
           },
         ),
       ),
-      bottomNavigationBar: BottomNavBar(
-        currentIndex: _currentIndex,
-        onTap: (index) => setState(() => _currentIndex = index),
-      ),
+      bottomNavigationBar: BottomNavBar(currentIndex: 0),
     );
   }
 }

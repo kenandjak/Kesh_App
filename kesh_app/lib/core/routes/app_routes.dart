@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import '../../presentation/controllers/auth_controller.dart';
 import '../../presentation/pages/auth_page.dart';
 import '../../presentation/pages/home_page.dart';
+import '../../presentation/pages/statement_page.dart';
+import '../../presentation/pages/profile_page.dart';
 
 final goRouter = GoRouter(
   initialLocation: '/login',
@@ -20,5 +22,10 @@ final goRouter = GoRouter(
   routes: [
     GoRoute(path: '/login', builder: (context, state) => const AuthPage()),
     GoRoute(path: '/home', builder: (context, state) => const HomePage()),
+    GoRoute(
+      path: '/statement',
+      builder: (context, state) => const StatementPage(),
+    ),
+    GoRoute(path: '/profile', builder: (context, state) => const ProfilePage()),
   ],
 );

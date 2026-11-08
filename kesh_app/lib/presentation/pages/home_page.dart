@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
 import '../controllers/home_controller.dart';
+import '../controllers/auth_controller.dart';
 import '../widgets/balance_card.dart';
 import '../widgets/home_header.dart';
 import '../widgets/nav_bar.dart';
@@ -24,7 +25,8 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _controller.loadData('USR-12345');
+      final userId = GetIt.I<AuthController>().session!.userId;
+      _controller.loadData(userId);
     });
   }
 

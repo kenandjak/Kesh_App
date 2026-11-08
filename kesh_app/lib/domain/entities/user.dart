@@ -8,6 +8,7 @@ class User {
   String phone;
   String passwordHash;
   final String walletId;
+  final String? profilePicture;
   String? paymentKey;
   bool isBlocked;
 
@@ -19,6 +20,7 @@ class User {
     required this.phone,
     required this.passwordHash,
     required this.walletId,
+    this.profilePicture,
     this.paymentKey,
     this.isBlocked = false,
   }) {

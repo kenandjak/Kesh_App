@@ -31,7 +31,8 @@ class HomeController extends ChangeNotifier {
       userName = data.userName;
       walletId = data.walletId;
       balance = data.balance;
-    } catch (e) {
+    } catch (e, st) {
+      debugPrint('loadData falhou: $e\n$st');
       errorMessage = 'Falha ao carregar informações.';
     } finally {
       isLoading = false;

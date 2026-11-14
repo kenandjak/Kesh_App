@@ -41,6 +41,7 @@ dependencies:
   go_router: ^18.0.2
   intl: ^0.20.3
   postgres: ^3.5.20
+  http: ^1.6.0
 
 dev_dependencies:
   flutter_test:

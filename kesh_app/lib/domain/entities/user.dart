@@ -9,6 +9,7 @@ class User {
   String passwordHash;
   final String walletId;
   final String? profilePicture;
+  final DateTime? createdAt;
   String? paymentKey;
   bool isBlocked;
 
@@ -21,6 +22,7 @@ class User {
     required this.passwordHash,
     required this.walletId,
     this.profilePicture,
+    this.createdAt,
     this.paymentKey,
     this.isBlocked = false,
   }) {

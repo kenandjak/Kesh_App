@@ -25,32 +25,34 @@ import '../../domain/repositories/wallet_repository.dart';
 //import '../../infrastructure/database/postgres_connection.dart';
 //import '../../infrastructure/repositories/postgres_user_repository.dart';
 //import '../../infrastructure/repositories/postgres_wallet_repository.dart';
+import '../../infrastructure/api/api_client.dart';
+import '../../infrastructure/repositories/api_user_repository.dart';
+import '../../infrastructure/repositories/api_wallet_repository.dart';
 import '../../infrastructure/repositories/fake_auth_clients.dart';
-import '../../infrastructure/repositories/fake_repositories.dart';
+
+//import '../../infrastructure/repositories/fake_repositories.dart';
 
 final sl = GetIt.instance; // sl = Service Locator
 
 Future<void> init() async {
   sl.registerLazySingleton(() => const Uuid());
   //sl.registerLazySingleton(() => PostgresConnection());
+  sl.registerLazySingleton(() => ApiClient());
 
   // sl.registerLazySingleton<UsuarioRepository>(() => UsuarioRepositorySqlite(db: sl()));
 
-  sl.registerLazySingleton<AuthApiClient>(
-    () => FakeAuthApiClient(),
-  ); // <-- USANDO FAKE
+  sl.registerLazySingleton<AuthApiClient>(() => FakeAuthApiClient());
   sl.registerLazySingleton<GoogleAuthClient>(() => FakeGoogleAuthClient());
   sl.registerLazySingleton<SecureStorageClient>(
     () => FakeSecureStorageClient(),
   );
   sl.registerLazySingleton<TokenManager>(() => SecureTokenManager(sl()));
 
-  sl.registerLazySingleton<UserRepository>(
-    () => FakeUserRepository(),
-  ); // <-- USANDO FAKE
-  sl.registerLazySingleton<WalletRepository>(
-    () => FakeWalletRepository(),
-  ); // <-- USANDO FAKE
+  sl.registerLazySingleton<UserRepository>(() => ApiUserRepository(sl()));
+  sl.registerLazySingleton<WalletRepository>(() => ApiWalletRepository(sl()));
+
+  //sl.registerLazySingleton<UserRepository>(() => FakeUserRepository());
+  //sl.registerLazySingleton<WalletRepository>(() => FakeWalletRepository());
 
   // sl.registerLazySingleton<HashService>(() => BcryptHashService());
   // sl.registerLazySingletonTokenService>(() => JwtTokenService());
@@ -63,7 +65,7 @@ Future<void> init() async {
   // CONTROLLERS (Apresentação)
   sl.registerLazySingleton(() => AuthController());
   sl.registerLazySingleton(() => HomeController(sl()));
-  sl.registerLazySingleton(() => ProfileController());
+  sl.registerLazySingleton(() => ProfileController(sl()));
   sl.registerLazySingleton(() => StatementController());
 
   sl.registerFactoryParam<AuthStrategy, String, String>(

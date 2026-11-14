@@ -73,6 +73,8 @@ class ProfileDetailsCard extends StatelessWidget {
             const SizedBox(height: 24),
             _buildDataRow('NOME COMPLETO', controller.fullName),
             const SizedBox(height: 20),
+            _buildDataRow('CPF', controller.cpf),
+            const SizedBox(height: 20),
             _buildDataRow('E-MAIL', controller.email),
             const SizedBox(height: 20),
             _buildDataRow('TELEFONE', controller.phone),

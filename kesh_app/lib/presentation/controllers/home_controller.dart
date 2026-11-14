@@ -28,7 +28,7 @@ class HomeController extends ChangeNotifier {
 
     try {
       final data = await _getUserDetails.execute(userId);
-      userName = data.userName;
+      userName = data.shortName;
       walletId = data.walletId;
       balance = data.balance;
     } catch (e, st) {

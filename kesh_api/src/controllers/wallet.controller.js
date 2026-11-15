@@ -50,17 +50,20 @@ class WalletController {
     } catch (error) {
       console.error(error);
 
-      if (
-        error.message === "Saldo insuficiente" ||
-        error.message.includes("carteiras não existem")
-      ) {
-        return res.status(400).json({
-          message: error.message,
+      if (error.code === "WALLET_NOT_FOUND") {
+        return res.status(404).json({
+          message: "Uma ou mais carteiras não foram encontradas.",
+        });
+      }
+
+      if (error.code === "INSUFFICIENT_BALANCE") {
+        return res.status(409).json({
+          message: "Saldo insuficiente para realizar a transferência.",
         });
       }
 
       return res.status(500).json({
-        message: "Erro ao realizar transferência",
+        message: "Erro ao realizar transferência.",
       });
     }
   }

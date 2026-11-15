@@ -3,8 +3,20 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
+import 'api_exception.dart';
+
 class ApiClient {
   final String baseUrl = 'http://localhost:3000/api';
+
+  String _getMessage(String body) {
+    final data = jsonDecode(body);
+
+    if (data is Map<String, dynamic>) {
+      return data['message']?.toString() ?? 'Erro na API';
+    }
+
+    return 'Erro na comunicação com a API';
+  }
 
   Future<Map<String, dynamic>> get(String endpoint) async {
     final response = await http.get(Uri.parse('$baseUrl$endpoint'));
@@ -13,7 +25,10 @@ class ApiClient {
     debugPrint('RESPOSTA: ${response.body}');
 
     if (response.statusCode != 200) {
-      throw Exception('Erro HTTP ${response.statusCode}: ${response.body}');
+      throw ApiException(
+        statusCode: response.statusCode,
+        message: _getMessage(response.body),
+      );
     }
 
     return jsonDecode(response.body);
@@ -29,12 +44,14 @@ class ApiClient {
       body: jsonEncode(body),
     );
 
-    // Exibe informações da requisição
     debugPrint('STATUS: ${response.statusCode}');
     debugPrint('RESPOSTA: ${response.body}');
 
     if (response.statusCode < 200 || response.statusCode >= 300) {
-      throw Exception('Erro HTTP ${response.statusCode}: ${response.body}');
+      throw ApiException(
+        statusCode: response.statusCode,
+        message: _getMessage(response.body),
+      );
     }
 
     if (response.body.isEmpty) {

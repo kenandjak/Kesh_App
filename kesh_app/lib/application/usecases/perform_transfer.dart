@@ -12,19 +12,22 @@ class PerformTransfer {
     required String receiverId,
     required double amount,
   }) async {
-    if (senderId == receiverId) {
+    if (amount <= 0) {
       throw InvalidTransferException(
-        'Remetente e destinatário não podem ser o mesmo usuário.',
+        'O valor da transferência deve ser maior que zero.',
       );
     }
-
+    if (senderId == receiverId) {
+      throw InvalidTransferException(
+        'Não é possível transferir para si mesmo.',
+      );
+    }
     final sender = await _repository.getById(senderId);
     final receiver = await _repository.getById(receiverId);
 
     if (sender == null || receiver == null) {
-      throw InvalidTransferException('Usuário não encontrado.');
+      throw InvalidTransferException('Carteira não encontrada.');
     }
-
     sender.debit(amount);
     receiver.addBalance(amount);
 

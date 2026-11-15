@@ -6,6 +6,7 @@ import '../../presentation/pages/auth_page.dart';
 import '../../presentation/pages/home_page.dart';
 import '../../presentation/pages/statement_page.dart';
 import '../../presentation/pages/profile_page.dart';
+import '../../presentation/pages/transfer_page.dart';
 
 final goRouter = GoRouter(
   initialLocation: '/login',
@@ -27,5 +28,13 @@ final goRouter = GoRouter(
       builder: (context, state) => const StatementPage(),
     ),
     GoRoute(path: '/profile', builder: (context, state) => const ProfilePage()),
+    GoRoute(
+      path: '/transfer',
+      builder: (context, state) {
+        final senderId = state.extra as String;
+
+        return TransferPage(senderId: senderId);
+      },
+    ),
   ],
 );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
 
 import '../controllers/home_controller.dart';
 import '../controllers/auth_controller.dart';
@@ -72,7 +73,22 @@ class _HomePageState extends State<HomePage> {
                     onToggleVisibility: _controller.toggleBalanceVisibility,
                   ),
                   const SizedBox(height: 32),
-                  const QuickActions(),
+                  QuickActions(
+                    onSend: () async {
+                      final transferred = await context.push<bool>(
+                        '/transfer',
+                        extra: _controller.walletId,
+                      );
+
+                      if (!mounted) return;
+
+                      if (transferred == true) {
+                        final userId =
+                            GetIt.I<AuthController>().session!.userId;
+                        await _controller.loadData(userId);
+                      }
+                    },
+                  ),
                   const SizedBox(height: 32),
                   RecentActivity(transactions: _controller.recentTransactions),
                 ],

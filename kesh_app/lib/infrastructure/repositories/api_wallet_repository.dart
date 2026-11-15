@@ -1,6 +1,7 @@
 import '../../domain/entities/wallet.dart';
 import '../../domain/repositories/wallet_repository.dart';
 import '../api/api_client.dart';
+import '../api/api_exception.dart';
 
 class ApiWalletRepository implements WalletRepository {
   final ApiClient api;
@@ -9,12 +10,20 @@ class ApiWalletRepository implements WalletRepository {
 
   @override
   Future<Wallet?> getById(String id) async {
-    final data = await api.get('/wallets/$id');
+    try {
+      final data = await api.get('/wallets/$id');
 
-    return Wallet(
-      id: data['id'],
-      initialBalance: double.parse(data['balance'].toString()),
-    );
+      return Wallet(
+        id: data['id'].toString(),
+        initialBalance: double.parse(data['balance'].toString()),
+      );
+    } on ApiException catch (e) {
+      if (e.statusCode == 404) {
+        return null;
+      }
+
+      rethrow;
+    }
   }
 
   @override
@@ -26,7 +35,7 @@ class ApiWalletRepository implements WalletRepository {
     await api.post('/wallets/transfer', {
       'senderId': sender.id,
       'receiverId': receiver.id,
-      'amount': amount.toStringAsFixed(2),
+      'amount': amount,
     });
   }
 }

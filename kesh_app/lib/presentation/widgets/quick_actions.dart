@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class QuickActions extends StatelessWidget {
-  const QuickActions({super.key});
+  final VoidCallback onSend;
+
+  const QuickActions({super.key, required this.onSend});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +19,7 @@ class QuickActions extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 4),
-        Text(
+        const Text(
           'Operações rápidas e seguras',
           style: TextStyle(fontSize: 14, color: Colors.black54),
         ),
@@ -29,11 +31,9 @@ class QuickActions extends StatelessWidget {
               child: _QuickActionButton(
                 title: 'Enviar',
                 icon: Icons.call_made,
-                iconColor: Colors.green.shade700,
+                iconColor: Colors.green,
                 backgroundColor: Colors.green.shade100,
-                onTap: () {
-                  // Futuramente: context.push('/transfer');
-                },
+                onTap: onSend,
               ),
             ),
             const SizedBox(width: 16),
@@ -41,7 +41,7 @@ class QuickActions extends StatelessWidget {
               child: _QuickActionButton(
                 title: 'Receber',
                 icon: Icons.call_received,
-                iconColor: Colors.orange.shade700,
+                iconColor: Colors.orange,
                 backgroundColor: Colors.orange.shade100,
                 onTap: () {},
               ),
@@ -55,7 +55,7 @@ class QuickActions extends StatelessWidget {
               child: _QuickActionButton(
                 title: 'Adicionar saldo',
                 icon: Icons.add,
-                iconColor: Colors.teal.shade700,
+                iconColor: Colors.teal,
                 backgroundColor: Colors.teal.shade100,
                 onTap: () {},
               ),
@@ -65,7 +65,7 @@ class QuickActions extends StatelessWidget {
               child: _QuickActionButton(
                 title: 'Pagar',
                 icon: Icons.qr_code_scanner,
-                iconColor: Colors.deepPurple.shade700,
+                iconColor: Colors.deepPurple,
                 backgroundColor: Colors.deepPurple.shade100,
                 onTap: () {},
               ),

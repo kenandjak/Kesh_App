@@ -4,6 +4,7 @@ import 'package:uuid/uuid.dart';
 import '../../application/usecases/register_user.dart';
 import '../../application/usecases/login_user.dart';
 import '../../application/usecases/get_user_details.dart';
+import '../../application/usecases/perform_transfer.dart';
 
 import '../../domain/repositories/auth_strategy.dart';
 import '../../domain/repositories/token_manager.dart';
@@ -18,6 +19,7 @@ import '../../presentation/controllers/auth_controller.dart';
 import '../../presentation/controllers/home_controller.dart';
 import '../../presentation/controllers/profile_controller.dart';
 import '../../presentation/controllers/statement_controller.dart';
+import '../../presentation/controllers/transfer_controller.dart';
 
 import '../../domain/repositories/user_repository.dart';
 import '../../domain/repositories/wallet_repository.dart';
@@ -61,12 +63,14 @@ Future<void> init() async {
   sl.registerFactory(() => RegisterUser(sl(), sl(), sl()));
   sl.registerFactory(() => LoginUser(sl(), sl(), sl()));
   sl.registerFactory(() => GetUserDetails(sl(), sl()));
+  sl.registerFactory(() => PerformTransfer(sl()));
 
   // CONTROLLERS (Apresentação)
   sl.registerLazySingleton(() => AuthController());
   sl.registerLazySingleton(() => HomeController(sl()));
   sl.registerLazySingleton(() => ProfileController(sl()));
   sl.registerLazySingleton(() => StatementController());
+  sl.registerFactory(() => TransferController(sl()));
 
   sl.registerFactoryParam<AuthStrategy, String, String>(
     (email, password) => EmailPasswordAuthStrategy(

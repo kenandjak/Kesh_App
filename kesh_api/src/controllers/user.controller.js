@@ -15,7 +15,6 @@ class UserController {
         });
       }
 
-      // Não retornar o hash da senha.
       const { password_hash, ...safeUser } = user;
 
       return res.status(200).json(safeUser);

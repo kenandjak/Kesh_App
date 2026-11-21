@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../domain/entities/transaction.dart';
 import '../controllers/home_controller.dart';
 
 class RecentActivity extends StatelessWidget {
-  final List<Transaction> transactions;
+  final HomeController controller;
 
-  const RecentActivity({super.key, required this.transactions});
+  const RecentActivity({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {
+    final transactions = controller.recentTransactions;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -34,9 +38,10 @@ class RecentActivity extends StatelessWidget {
                 ),
               ],
             ),
+
             GestureDetector(
               onTap: () {
-                // Futuramente redireciona para a aba de Extrato
+                context.go('/statement');
               },
               child: Text(
                 'Ver extrato completo',
@@ -52,39 +57,47 @@ class RecentActivity extends StatelessWidget {
 
         const SizedBox(height: 24),
 
-        Column(
-          children: transactions
-              .map((tx) => _buildTransactionItem(tx))
-              .toList(),
-        ),
+        if (transactions.isEmpty)
+          const Center(
+            child: Padding(
+              padding: EdgeInsets.all(16),
+              child: Text(
+                'Nenhuma atividade recente.',
+                style: TextStyle(color: Colors.black54),
+              ),
+            ),
+          )
+        else
+          Column(
+            children: transactions
+                .map((tx) => _buildTransactionItem(tx))
+                .toList(),
+          ),
       ],
     );
   }
 
   Widget _buildTransactionItem(Transaction tx) {
-    // Para simplificar, estamos usando o isPositive, mas futuramente
-    // poderíamos olhar para o TransactionType (deposito, pagamento, transferencia)
-    final isPayment = tx.title.toLowerCase().contains('café');
+    final isIncoming = controller.isIncoming(tx);
 
-    final iconData = isPayment
-        ? Icons.local_cafe_outlined
-        : (tx.isPositive ? Icons.arrow_downward : Icons.arrow_upward);
+    final iconData = tx.type == TransactionType.payment
+        ? Icons.shopping_bag_outlined
+        : tx.type == TransactionType.simulatedDeposit
+        ? Icons.account_balance_wallet_outlined
+        : isIncoming
+        ? Icons.arrow_downward
+        : Icons.arrow_upward;
 
-    final iconColor = isPayment
-        ? Colors.brown.shade700
-        : (tx.isPositive ? Colors.green.shade700 : Colors.grey.shade700);
+    final iconColor = isIncoming ? Colors.green.shade700 : Colors.grey.shade700;
 
-    final bgColor = isPayment
-        ? Colors.orange.shade100
-        : (tx.isPositive ? Colors.green.shade100 : Colors.grey.shade200);
+    final bgColor = isIncoming ? Colors.green.shade100 : Colors.grey.shade200;
 
-    final amountColor = tx.isPositive ? Colors.green.shade700 : Colors.black87;
-    final prefix = tx.isPositive ? '+' : '-';
-    final formattedAmount =
-        'R\$ ${tx.amount.toStringAsFixed(2).replaceAll('.', ',')}';
+    final amountColor = isIncoming ? Colors.green.shade700 : Colors.black87;
+
+    final prefix = isIncoming ? '+' : '-';
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16.0),
+      padding: const EdgeInsets.only(bottom: 16),
       child: Row(
         children: [
           Container(
@@ -92,6 +105,7 @@ class RecentActivity extends StatelessWidget {
             decoration: BoxDecoration(color: bgColor, shape: BoxShape.circle),
             child: Icon(iconData, color: iconColor, size: 20),
           ),
+
           const SizedBox(width: 16),
 
           Expanded(
@@ -99,7 +113,7 @@ class RecentActivity extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  tx.title,
+                  controller.getTransactionTitle(tx),
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 15,
@@ -108,7 +122,7 @@ class RecentActivity extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  tx.subtitle,
+                  controller.formatDate(tx.dateTime),
                   style: const TextStyle(fontSize: 12, color: Colors.black54),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -119,9 +133,8 @@ class RecentActivity extends StatelessWidget {
 
           const SizedBox(width: 8),
 
-          // Valor Monetário
           Text(
-            '$prefix $formattedAmount',
+            '$prefix ${controller.formatCurrency(tx.amount)}',
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 14,

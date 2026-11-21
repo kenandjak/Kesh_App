@@ -5,6 +5,7 @@ import '../../application/usecases/register_user.dart';
 import '../../application/usecases/login_user.dart';
 import '../../application/usecases/get_user_details.dart';
 import '../../application/usecases/perform_transfer.dart';
+import '../../application/usecases/get_transactions.dart';
 
 import '../../domain/repositories/auth_strategy.dart';
 import '../../domain/repositories/token_manager.dart';
@@ -23,6 +24,7 @@ import '../../presentation/controllers/transfer_controller.dart';
 
 import '../../domain/repositories/user_repository.dart';
 import '../../domain/repositories/wallet_repository.dart';
+import '../../domain/repositories/transaction_repository.dart';
 
 //import '../../infrastructure/database/postgres_connection.dart';
 //import '../../infrastructure/repositories/postgres_user_repository.dart';
@@ -30,6 +32,7 @@ import '../../domain/repositories/wallet_repository.dart';
 import '../../infrastructure/api/api_client.dart';
 import '../../infrastructure/repositories/api_user_repository.dart';
 import '../../infrastructure/repositories/api_wallet_repository.dart';
+import '../../infrastructure/repositories/api_transaction_repository.dart';
 import '../../infrastructure/repositories/fake_auth_clients.dart';
 
 //import '../../infrastructure/repositories/fake_repositories.dart';
@@ -52,6 +55,9 @@ Future<void> init() async {
 
   sl.registerLazySingleton<UserRepository>(() => ApiUserRepository(sl()));
   sl.registerLazySingleton<WalletRepository>(() => ApiWalletRepository(sl()));
+  sl.registerLazySingleton<TransactionRepository>(
+    () => ApiTransactionRepository(sl()),
+  );
 
   //sl.registerLazySingleton<UserRepository>(() => FakeUserRepository());
   //sl.registerLazySingleton<WalletRepository>(() => FakeWalletRepository());
@@ -64,12 +70,13 @@ Future<void> init() async {
   sl.registerFactory(() => LoginUser(sl(), sl(), sl()));
   sl.registerFactory(() => GetUserDetails(sl(), sl()));
   sl.registerFactory(() => PerformTransfer(sl()));
+  sl.registerFactory(() => GetTransactions(sl()));
 
   // CONTROLLERS (Apresentação)
   sl.registerLazySingleton(() => AuthController());
-  sl.registerLazySingleton(() => HomeController(sl()));
+  sl.registerLazySingleton(() => HomeController(sl(), sl()));
   sl.registerLazySingleton(() => ProfileController(sl()));
-  sl.registerLazySingleton(() => StatementController());
+  sl.registerFactory(() => StatementController(sl()));
   sl.registerFactory(() => TransferController(sl()));
 
   sl.registerFactoryParam<AuthStrategy, String, String>(

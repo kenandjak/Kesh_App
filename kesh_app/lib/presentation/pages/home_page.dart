@@ -90,7 +90,7 @@ class _HomePageState extends State<HomePage> {
                     },
                   ),
                   const SizedBox(height: 32),
-                  RecentActivity(transactions: _controller.recentTransactions),
+                  RecentActivity(controller: _controller),
                 ],
               ),
             );

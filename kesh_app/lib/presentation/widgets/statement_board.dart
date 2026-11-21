@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../controllers/home_controller.dart';
+import '../../domain/entities/transaction.dart';
 import '../controllers/statement_controller.dart';
 
 class StatementBoard extends StatelessWidget {
@@ -33,6 +33,7 @@ class StatementBoard extends StatelessWidget {
             backgroundColor: const Color(0xFFF2FAF2),
             textColor: Colors.green.shade700,
           ),
+
           const SizedBox(height: 12),
 
           _buildSummaryBox(
@@ -46,7 +47,6 @@ class StatementBoard extends StatelessWidget {
 
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -66,34 +66,27 @@ class StatementBoard extends StatelessWidget {
                   ),
                 ],
               ),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
-                ),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey.shade300),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: const Text(
-                  'Últimos 30 dias',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black54,
-                  ),
-                ),
-              ),
             ],
           ),
 
           const SizedBox(height: 24),
 
-          Column(
-            children: controller.transactions
-                .map((tx) => _buildTransactionItem(tx))
-                .toList(),
-          ),
+          if (controller.transactions.isEmpty)
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 24),
+              child: Center(
+                child: Text(
+                  'Nenhuma movimentação encontrada.',
+                  style: TextStyle(color: Colors.black54),
+                ),
+              ),
+            )
+          else
+            Column(
+              children: controller.transactions
+                  .map(_buildTransactionItem)
+                  .toList(),
+            ),
         ],
       ),
     );
@@ -134,23 +127,26 @@ class StatementBoard extends StatelessWidget {
   }
 
   Widget _buildTransactionItem(Transaction tx) {
-    final isPayment = tx.title.toLowerCase().contains('café');
-    final iconData = isPayment
-        ? Icons.local_cafe_outlined
-        : (tx.isPositive ? Icons.arrow_downward : Icons.arrow_upward);
-    final iconColor = isPayment
-        ? Colors.brown.shade700
-        : (tx.isPositive ? Colors.green.shade700 : Colors.grey.shade700);
-    final bgColor = isPayment
-        ? Colors.orange.shade100
-        : (tx.isPositive ? Colors.green.shade100 : Colors.grey.shade200);
-    final amountColor = tx.isPositive ? Colors.green.shade700 : Colors.black87;
-    final prefix = tx.isPositive ? '+' : '-';
-    final formattedAmount =
-        'R\$ ${tx.amount.toStringAsFixed(2).replaceAll('.', ',')}';
+    final isIncoming = controller.isIncoming(tx);
+
+    final iconData = tx.type == TransactionType.payment
+        ? Icons.shopping_bag_outlined
+        : tx.type == TransactionType.simulatedDeposit
+        ? Icons.account_balance_wallet_outlined
+        : isIncoming
+        ? Icons.arrow_downward
+        : Icons.arrow_upward;
+
+    final iconColor = isIncoming ? Colors.green.shade700 : Colors.grey.shade700;
+
+    final bgColor = isIncoming ? Colors.green.shade100 : Colors.grey.shade200;
+
+    final amountColor = isIncoming ? Colors.green.shade700 : Colors.black87;
+
+    final prefix = isIncoming ? '+' : '-';
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16.0),
+      padding: const EdgeInsets.only(bottom: 16),
       child: Row(
         children: [
           Container(
@@ -158,13 +154,15 @@ class StatementBoard extends StatelessWidget {
             decoration: BoxDecoration(color: bgColor, shape: BoxShape.circle),
             child: Icon(iconData, color: iconColor, size: 20),
           ),
+
           const SizedBox(width: 16),
+
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  tx.title,
+                  controller.getTransactionTitle(tx),
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
@@ -173,17 +171,17 @@ class StatementBoard extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  tx.subtitle,
+                  controller.formatDate(tx.dateTime),
                   style: const TextStyle(fontSize: 12, color: Colors.black54),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),
           ),
+
           const SizedBox(width: 8),
+
           Text(
-            '$prefix $formattedAmount',
+            '$prefix ${controller.formatCurrency(tx.amount)}',
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 14,

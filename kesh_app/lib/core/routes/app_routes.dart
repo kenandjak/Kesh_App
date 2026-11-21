@@ -2,6 +2,7 @@ import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../presentation/controllers/auth_controller.dart';
+import '../../presentation/controllers/home_controller.dart';
 import '../../presentation/pages/auth_page.dart';
 import '../../presentation/pages/home_page.dart';
 import '../../presentation/pages/statement_page.dart';
@@ -25,7 +26,10 @@ final goRouter = GoRouter(
     GoRoute(path: '/home', builder: (context, state) => const HomePage()),
     GoRoute(
       path: '/statement',
-      builder: (context, state) => const StatementPage(),
+      builder: (context, state) {
+        final homeController = GetIt.I<HomeController>();
+        return StatementPage(walletId: homeController.walletId);
+      },
     ),
     GoRoute(path: '/profile', builder: (context, state) => const ProfilePage()),
     GoRoute(

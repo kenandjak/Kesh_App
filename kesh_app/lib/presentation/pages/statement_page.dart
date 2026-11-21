@@ -6,16 +6,33 @@ import '../widgets/nav_bar.dart';
 import '../widgets/statement_board.dart';
 
 class StatementPage extends StatefulWidget {
-  const StatementPage({super.key});
+  final String walletId;
+
+  const StatementPage({super.key, required this.walletId});
 
   @override
   State<StatementPage> createState() => _StatementPageState();
 }
 
 class _StatementPageState extends State<StatementPage> {
-  final _controller = GetIt.I<StatementController>();
+  late final StatementController _controller;
 
   static const _backgroundColor = Color(0xFFF2F4F2);
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = GetIt.I<StatementController>();
+
+    _controller.loadTransactions(widget.walletId);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,10 +101,41 @@ class _StatementPageState extends State<StatementPage> {
                   ),
                 ],
               ),
+
               const SizedBox(height: 24),
 
-              // Componente Central
-              StatementBoard(controller: _controller),
+              AnimatedBuilder(
+                animation: _controller,
+                builder: (context, child) {
+                  if (_controller.isLoading) {
+                    return const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(32),
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  }
+
+                  if (_controller.errorMessage != null) {
+                    return Center(
+                      child: Column(
+                        children: [
+                          Text(_controller.errorMessage!),
+                          const SizedBox(height: 12),
+                          ElevatedButton(
+                            onPressed: () {
+                              _controller.loadTransactions(widget.walletId);
+                            },
+                            child: const Text('Tentar novamente'),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+
+                  return StatementBoard(controller: _controller);
+                },
+              ),
             ],
           ),
         ),
